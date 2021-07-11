@@ -4,6 +4,7 @@
 
 #ifndef CONTAINERS_VECTORITERATOR_HPP
 #define CONTAINERS_VECTORITERATOR_HPP
+#include "Utils.hpp"
 
 namespace ft
 {
@@ -17,76 +18,69 @@ namespace ft
 		typedef T *pointer;
 		typedef T &reference;
 		typedef RandomAccessIteratorTag iterator_category;
-
 	private:
-		typedef VectorIterator<T> VecItType;
-
-		pointer _e;
-
-		explicit VectorIterator(pointer elem) : _e(elem) {}
-
+		pointer valuePtr;
 	public:
-		explicit VectorIterator() : _e(NULL) {}
-
-		VectorIterator(const VecItType &other) : _e(other._e) {}
-
+		explicit VectorIterator(pointer value) : valuePtr(value) {}
+		explicit VectorIterator() : valuePtr(NULL) {}
+		VectorIterator(const VectorIterator<T> &other) : valuePtr(other.valuePtr) {}
 		~VectorIterator() {}
 
-		VecItType &operator=(const VecItType &other)
+		VectorIterator &operator=(const VectorIterator<T> &other)
 		{
-			_e = other._e;
+			valuePtr = other.valuePtr;
 			return *this;
 		}
 
 		// prefix increment
-		VecItType &operator++()
+		VectorIterator &operator++()
 		{
-			++_e;
+			++valuePtr;
 			return *this;
 		}
 
 		// postfix increment
-		VecItType operator++(int)
+		VectorIterator operator++(int)
 		{
-			VecItType ite = *this;
-			++_e;
+			VectorIterator<T> ite = *this;
+			++valuePtr;
 			return ite;
 		}
 
 		reference operator*() const
 		{
-			return *_e;
+			return *valuePtr;
 		}
 
 		pointer operator->() const
 		{
-			return _e;
+			return valuePtr;
 		}
 
 		// prefix decrement
-		VecItType &operator--()
+		VectorIterator &operator--()
 		{
-			--_e;
+			--valuePtr;
 			return *this;
 		}
 
 		// postfix decrement
-		VecItType operator--(int)
+		VectorIterator operator--(int)
 		{
-			VecItType ite = *this;
-			--_e;
+			VectorIterator ite = *this;
+			--valuePtr;
 			return ite;
 		}
 
-		VecItType &operator+=(size_type offset)
+		VectorIterator &operator+=(size_type offset)
 		{
-			_e += offset;
+			valuePtr += offset;
 			return *this;
 		}
 
-		VecItType &operator-=(size_type offset)
+		VectorIterator &operator-=(size_type offset)
 		{
-			_e -= offset;
+			valuePtr -= offset;
 			return *this;
 		}
 
@@ -95,23 +89,23 @@ namespace ft
 			return *(*this + n);
 		}
 
-		template <typename T>
-		friend bool operator==(const VectorIterator<T> &lhs, const VectorIterator<T> &rhs);
+		template <typename Tf>
+		friend bool operator==(const VectorIterator<Tf> &lhs, const VectorIterator<Tf> &rhs);
 
-		template <typename T>
-		friend bool operator<(const VectorIterator<T> &lhs, const VectorIterator<T> &rhs);
+		template <typename Tf>
+		friend bool operator<(const VectorIterator<Tf> &lhs, const VectorIterator<Tf> &rhs);
 
-		template <typename T>
-		friend ptrdiff_t operator-(const VectorIterator<T> &lhs, const VectorIterator<T> &rhs);
+		template <typename Tf>
+		friend ptrdiff_t operator-(const VectorIterator<Tf> &lhs, const VectorIterator<Tf> &rhs);
 
-		template <typename T>
+		template <typename Tf, class Alloc>
 		friend class Vector;
 	};
 
 	template <typename T>
 	bool operator==(const VectorIterator<T> &lhs, const VectorIterator<T> &rhs)
 	{
-		return lhs._e == rhs._e;
+		return lhs.valuePtr == rhs.valuePtr;
 	}
 
 	template <typename T>
@@ -123,7 +117,7 @@ namespace ft
 	template <typename T>
 	bool operator<(const VectorIterator<T> &lhs, const VectorIterator<T> &rhs)
 	{
-		return lhs._e < rhs._e;
+		return lhs.valuePtr < rhs.valuePtr;
 	}
 
 	template <typename T>
@@ -167,7 +161,7 @@ namespace ft
 	template <typename T>
 	ptrdiff_t operator-(const VectorIterator<T> &lhs, const VectorIterator<T> &rhs)
 	{
-		return lhs._e - rhs._e;
+		return lhs.valuePtr - rhs.valuePtr;
 	}
 }
 

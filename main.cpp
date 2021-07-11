@@ -1,41 +1,113 @@
 #include <iostream>
 #include <vector>
+#include "Vector.hpp"
 
 struct test
 {
 	int i;
+	float b;
 };
 
 int main()
 {
-	std::vector<int> vec;
-	std::vector<int>::iterator firstIt;
-	std::vector<int>::iterator lastIt;
-	std::vector<int>::iterator it;
+	std::vector<float> vec;
+	std::vector<float>::iterator firstIt;
+	std::vector<float>::iterator lastIt;
+	std::vector<float>::iterator it;
 
 	std::cout << vec.capacity() << std::endl;
 	for (int i = 0; i < 64; i++)
 	{
-		vec.push_back(i);
+		vec.push_back((float)i);
 		std::cout << vec.capacity() << std::endl;
 	}
 
+	for (int i = 0; i < 64; i++)
+	{
+		std::cout << vec[i] << " ";
+	}
 	std::cout << std::endl;
-	vec.reserve(65);
-	std::cout << vec.capacity() << std::endl;
+
+	vec.insert(vec.begin() + 5, 1000, 0.);
+
+	for (int i = 0; i < 1064; i++)
+	{
+		std::cout << vec[i] << " ";
+	}
 	std::cout << std::endl;
-
-	vec.push_back(7);
 	std::cout << vec.capacity() << std::endl;
-	vec.push_back(7);
-	std::cout << vec.capacity() << std::endl;
-
-
-
-	firstIt = vec.begin();
-	lastIt = vec.end();
-
-	it = firstIt;
-	std::cout << std::endl << *it << " " <<  *(it + 2) << " " << *it << std::endl;
 	return 0;
 }
+
+//  0
+//  1
+//  2
+//  4
+//  4
+//  8
+//  8
+//  8
+//  8
+//  16
+//  16
+//  16
+//  16
+//  16
+//  16
+//  16
+//  16
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  32
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//  64
+//
+//  65
+//
+//  65
+//  130
+//
+//  0 2 0
