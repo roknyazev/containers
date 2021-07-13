@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "Vector.hpp"
+#include <ctime>
 
 struct test
 {
@@ -10,104 +11,52 @@ struct test
 
 int main()
 {
-	std::vector<float> vec;
-	std::vector<float>::iterator firstIt;
-	std::vector<float>::iterator lastIt;
-	std::vector<float>::iterator it;
+	size_t cl = clock();
+
+	ft::Vector<double> vec;
+	ft::Vector<double>::iterator firstIt;
+	ft::Vector<double>::iterator lastIt;
+	ft::Vector<double>::iterator it;
 
 	std::cout << vec.capacity() << std::endl;
-	for (int i = 0; i < 64; i++)
+
+	int tmp1 = 6500000;
+	int tmp2 = 4000000;
+
+	for (int i = 0; i < tmp1; i++)
 	{
-		vec.push_back((float)i);
-		std::cout << vec.capacity() << std::endl;
+		vec.insert(vec.end(), i);
+		std::cout << vec.capacity() << "    ";
+		std::cout << vec.size() << std::endl;
 	}
 
-	for (int i = 0; i < 64; i++)
+	std::cout << "    " << vec.size() << std::endl;
+	vec.insert(vec.begin() + 10, tmp2, 0);
+	std::cout << "    " << vec.size() << std::endl;
+
+	for (int i = 0; i < vec.size(); i++)
 	{
 		std::cout << vec[i] << " ";
 	}
 	std::cout << std::endl;
 
-	vec.insert(vec.begin() + 5, 1000, 0.);
+	vec.erase(vec.begin() + 5, vec.begin() + 20);
 
-	for (int i = 0; i < 1064; i++)
+	for (int i = 0; i < vec.size(); i++)
+	{
+		std::cout << vec[i] << " ";
+	}
+	std::cout << std::endl;
+
+	vec.resize(10);
+
+	for (int i = 0; i < vec.size(); i++)
 	{
 		std::cout << vec[i] << " ";
 	}
 	std::cout << std::endl;
 	std::cout << vec.capacity() << std::endl;
+	std::cout << std::endl;
+	std::cout << (clock() - cl) / (double)CLOCKS_PER_SEC << std::endl;
 	return 0;
 }
-
-//  0
-//  1
-//  2
-//  4
-//  4
-//  8
-//  8
-//  8
-//  8
-//  16
-//  16
-//  16
-//  16
-//  16
-//  16
-//  16
-//  16
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  32
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//  64
-//
-//  65
-//
-//  65
-//  130
-//
-//  0 2 0

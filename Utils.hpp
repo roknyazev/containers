@@ -6,6 +6,7 @@
 #define CONTAINERS_UTILS_HPP
 #include <cstddef>
 #include <memory>
+#include "TypeTraits.hpp"
 
 namespace ft
 {
@@ -13,25 +14,16 @@ namespace ft
 	/*
 	 * iterators_traits, reverse_iterator
 	 */
-	template<typename T>
-	struct is_const_pointer { static const bool value = false; };
-
-	template<typename T>
-	struct is_const_pointer<const T*> { static const bool value = true; };
-
-	template <typename TIterator>
-	struct is_const_iterator
-	{
-		typedef typename std::iterator_traits<TIterator>::pointer pointer;
-		static const bool value = is_const_pointer<pointer>::value;
-	};
 
 
 	template<bool B, class T = void>
 	struct enable_if {};
 
 	template<class T>
-	struct enable_if<true, T> { typedef T type; };
+	struct enable_if<true, T>
+	{
+		typedef T type;
+	};
 
 	// tags
 	struct InputIteratorTag
