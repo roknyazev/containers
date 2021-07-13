@@ -2,12 +2,7 @@
 #include <vector>
 #include "Vector.hpp"
 #include <ctime>
-
-struct test
-{
-	int i;
-	float b;
-};
+#include "Stack.hpp"
 
 int main()
 {
@@ -20,8 +15,8 @@ int main()
 
 	std::cout << vec.capacity() << std::endl;
 
-	int tmp1 = 6500000;
-	int tmp2 = 4000000;
+	int tmp1 = 650;
+	int tmp2 = 400;
 
 	for (int i = 0; i < tmp1; i++)
 	{
