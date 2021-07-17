@@ -7,10 +7,10 @@
 #include <cstddef>
 #include <memory>
 #include "TypeTraits.hpp"
+#include "AVL.hpp"
 
 namespace ft
 {
-
 	/*
 	 * iterators_traits, reverse_iterator
 	 */
