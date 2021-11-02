@@ -93,20 +93,26 @@ namespace ft
 		return !(lhs < rhs);
 	}
 
-
-
-
-
-	template <typename T1, typename T2>
+	template <typename T1, typename T2, class Compare>
 	struct node
 	{
-		Pair<T1, T2> data;
+		typedef Compare    key_compare;
+		Pair<T1, T2> content;
 		T1 &key;
 		unsigned char height;
+		node* parent;
 		node* left;
 		node* right;
-
-		node(const T1 &key, const T2 &value) : data(key, value), key(data.first)
+		key_compare comp;
+		// comp is equivalent to operator <. So:
+		//      - operator>(lhs, rhs)  <==>  comp(rhs, lhs)
+		//      - operator<=(lhs, rhs)  <==>  !comp(rhs, lhs)
+		//      - operator>=(lhs, rhs)  <==>  !comp(lhs, rhs)
+		node(const T1 &key, const T2 &value, key_compare comp = key_compare()) :
+		content(key, value),
+		key(content.first),
+		parent(nullptr),
+		comp(comp)
 		{
 			left = 0;
 			right = 0;
@@ -114,30 +120,30 @@ namespace ft
 		}
 	};
 
-	template <typename T1, typename T2>
-	unsigned char height(node<T1, T2>* p)
+	template <typename T1, typename T2, class Compare>
+	unsigned char height(node<T1, T2, Compare>* p)
 	{
-		return p?p->height:0;
+		return p ? p->height : 0;
 	}
 
-	template <typename T1, typename T2>
-	int bfactor(node<T1, T2>* p)
+	template <typename T1, typename T2, class Compare>
+	int bfactor(node<T1, T2, Compare>* p)
 	{
-		return height(p->right)-height(p->left);
+		return height(p->right) - height(p->left);
 	}
 
-	template <typename T1, typename T2>
-	void fixheight(node<T1, T2>* p)
+	template <typename T1, typename T2, class Compare>
+	void fixheight(node<T1, T2, Compare>* p)
 	{
 		unsigned char hl = height(p->left);
 		unsigned char hr = height(p->right);
-		p->height = (hl>hr?hl:hr)+1;
+		p->height = (hl > hr  ? hl : hr) + 1;
 	}
 
-	template <typename T1, typename T2>
-	node<T1, T2>* rotateright(node<T1, T2>* p) // правый поворот вокруг p
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* rotateright(node<T1, T2, Compare>* p) // правый поворот вокруг p
 	{
-		node<T1, T2>* q = p->left;
+		node<T1, T2, Compare>* q = p->left;
 		p->left = q->right;
 		q->right = p;
 		fixheight(p);
@@ -145,10 +151,10 @@ namespace ft
 		return q;
 	}
 
-	template <typename T1, typename T2>
-	node<T1, T2>* rotateleft(node<T1, T2>* q) // левый поворот вокруг q
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* rotateleft(node<T1, T2, Compare>* q) // левый поворот вокруг q
 	{
-		node<T1, T2>* p = q->right;
+		node<T1, T2, Compare>* p = q->right;
 		q->right = p->left;
 		p->left = q;
 		fixheight(q);
@@ -156,66 +162,87 @@ namespace ft
 		return p;
 	}
 
-	template <typename T1, typename T2>
-	node<T1, T2>* balance(node<T1, T2>* p) // балансировка узла p
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* balance(node<T1, T2, Compare>* p) // балансировка узла p
 	{
 		fixheight(p);
-		if( bfactor(p)==2 )
+		if (bfactor(p) == 2)
 		{
-			if( bfactor(p->right) < 0 )
+			if (bfactor(p->right) < 0)
 				p->right = rotateright(p->right);
 			return rotateleft(p);
 		}
-		if( bfactor(p)==-2 )
+		if (bfactor(p)== -2)
 		{
-			if( bfactor(p->left) > 0  )
+			if(bfactor(p->left) > 0)
 				p->left = rotateleft(p->left);
 			return rotateright(p);
 		}
 		return p; // балансировка не нужна
 	}
 
-	template <typename T1, typename T2>
-	node<T1, T2>* insert(node<T1, T2>* p, T1 k) // вставка ключа k в дерево с корнем p
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* insert(node<T1, T2, Compare>* p, T1 k, T1 v, node<T1, T2, Compare>* up) // вставка ключа k в дерево с корнем p
 	{
-		if( !p ) return new node<T1, T2>(k);
-		if( k<p->key )
-			p->left = insert(p->left,k);
+		if (!p)
+			return new node<T1, T2, Compare>(k, v, up);
+		if (k < p->key)
+			p->left = insert(p->left, k, v, p);
 		else
-			p->right = insert(p->right,k);
+			p->right = insert(p->right, k, v, p);
 		return balance(p);
 	}
 
-	template <typename T1, typename T2>
-	node<T1, T2>* findmin(node<T1, T2>* p) // поиск узла с минимальным ключом в дереве p
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* findmin(node<T1, T2, Compare>* p) // поиск узла с минимальным ключом в дереве p
 	{
-		return p->left?findmin(p->left):p;
+		return p->left ? findmin(p->left) : p;
 	}
 
-	template <typename T1, typename T2>
-	node<T1, T2>* removemin(node<T1, T2>* p) // удаление узла с минимальным ключом из дерева p
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* findmax(node<T1, T2, Compare>* p) // поиск узла с минимальным ключом в дереве p
 	{
-		if( p->left==0 )
+		return p->right ? findmin(p->right) : p;
+	}
+
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* findmaxparent(node<T1, T2, Compare>* p)
+	{
+		return (p != p->parent->left) ? findmaxparent(p->parent) : p->parent;
+	}
+
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* findminparent(node<T1, T2, Compare>* p)
+	{
+		return (p != p->parent->right) ? findmaxparent(p->parent) : p->parent;
+	}
+
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* removemin(node<T1, T2, Compare>* p) // удаление узла с минимальным ключом из дерева p
+	{
+		if (p->left == 0)
 			return p->right;
 		p->left = removemin(p->left);
 		return balance(p);
 	}
 
-	template <typename T1, typename T2>
-	node<T1, T2>* remove(node<T1, T2>* p, T1 k) // удаление ключа k из дерева p
+	template <typename T1, typename T2, class Compare>
+	node<T1, T2, Compare>* remove(node<T1, T2, Compare>* p, T1 k) // удаление ключа k из дерева p
 	{
-		if( !p ) return 0;
-		if( k < p->key )
-			p->left = remove(p->left,k);
-		else if( k > p->key )
-			p->right = remove(p->right,k);
+		if (!p)
+			return 0;
+		if (k < p->key)
+			p->left = remove(p->left, k);
+		else if (k > p->key)
+			p->right = remove(p->right, k);
 		else //  k == p->key
 		{
-			node<T1, T2>* q = p->left;
-			node<T1, T2>* r = p->right;
+			node<T1, T2, Compare>* q = p->left;
+			node<T1, T2, Compare>* r = p->right;
 			delete p;
-			if( !r ) return q;
-			node<T1, T2>* min = findmin(r);
+			if (!r)
+				return q;
+			node<T1, T2, Compare>* min = findmin(r);
 			min->right = removemin(r);
 			min->left = q;
 			return balance(min);

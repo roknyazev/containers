@@ -70,7 +70,7 @@ namespace ft
 	private:
 		Iter base_iterator;
 
-		ReverseIterator();
+		ReverseIterator() {};
 
 	public:
 		typedef Iter iterator_type;
