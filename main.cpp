@@ -12,8 +12,10 @@ int main()
 {
 	std::map<int, int> test;
 	std::map<int, int>::iterator it = test.begin();
+    std::map<int, int>::iterator ite = test.end();
 
 
+    std::cout << it->first << std::endl;
 
-	return &(*test.begin()) == &(*test.end());
+	return 0;//&(*test.begin()) == &(*test.end());
 }

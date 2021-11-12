@@ -46,30 +46,108 @@ namespace ft
 		allocator(alloc),
 		comp(cmp)
 		{
-			root = nullptr;
-			min_node = nullptr;
-			max_node = nullptr;
-			first = new node_obj(allocator.allocate(1), comp);
-			last = new node_obj(allocator.allocate(1), comp);
+            root = nullptr;
+            first = new node_obj(allocator.allocate(1), comp);
+            last = new node_obj(allocator.allocate(1), comp);
+            min_node = last;
+            max_node = first;
 		}
 
 		template <class InputIterator>
-		Map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
-					const allocator_type& alloc = allocator_type()) :
+		Map(InputIterator first,
+            InputIterator last,
+            const key_compare& comp = key_compare(),
+            const allocator_type& alloc = allocator_type()) :
 					allocator(alloc),
 					comp(comp)
 		{
-			root = nullptr;
-			min_node = nullptr;
-			max_node = nullptr;
-			first = new node_obj(allocator.allocate(1), comp);
-			last = new node_obj(allocator.allocate(1), comp);
+
+            root = nullptr;
+            first = new node_obj(allocator.allocate(1), comp);
+            last = new node_obj(allocator.allocate(1), comp);
+            min_node = last;
+            max_node = first;
 
 			for (; first != last; ++first)
 				insert(*first);
 		}
 
-	};
+        Map(const Map& other) :
+            allocator(other.allocator),
+            comp(other.comp)
+        {
+            root = nullptr;
+            first = new node_obj(allocator.allocate(1), comp);
+            last = new node_obj(allocator.allocate(1), comp);
+            min_node = last;
+            max_node = first;
+
+
+            for (const_iterator it = other.begin(); it != other.end(); ++it)
+                insert(*it);
+        }
+
+        ~Map()
+        {
+            //clear(); FIXME
+            //deallocateNode(_lastElem);
+        }
+
+        Map& operator=(const Map& x)
+        {
+            Map tmp(x);
+            this->swap(tmp);
+
+            return *this;
+        }
+
+
+
+
+
+        iterator begin()
+        {
+            return iterator(_lastElem->right, _lastElem, _comp);
+        }
+
+        const_iterator begin() const
+        {
+            return const_iterator(_lastElem->right, _lastElem, _comp);
+        }
+
+        iterator end()
+        {
+            return iterator(_lastElem, _lastElem, _comp);
+        }
+
+        const_iterator end() const
+        {
+            return const_iterator(_lastElem, _lastElem, _comp);
+        }
+
+        reverse_iterator rbegin()
+        {
+            return reverse_iterator(_lastElem->left, _lastElem, _comp);
+        }
+
+
+        const_reverse_iterator rbegin() const
+        {
+            return const_reverse_iterator(_lastElem->left, _lastElem, _comp);
+        }
+
+
+        reverse_iterator rend()
+        {
+            return reverse_iterator(_lastElem, _lastElem, _comp);
+        }
+
+        const_reverse_iterator rend() const
+        {
+            return const_reverse_iterator(_lastElem, _lastElem, _comp);
+        }
+
+    };
 
 }
 
