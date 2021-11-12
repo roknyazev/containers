@@ -15,25 +15,20 @@ namespace ft
 		T2 second;
 
 		Pair() : first(), second()
-		{
-		}
+		{}
 
 		~Pair()
-		{
-		}
+		{}
 
 		Pair(const T1 &x, const T2 &y) : first(x), second(y)
-		{
-		}
+		{}
 
 		template <typename U1, typename U2>
-		Pair(const Pair<U1, U2> &c) : first(c.first), second(c.second)
-		{
-		}
+		explicit Pair(const Pair<U1, U2> &c) : first(c.first), second(c.second)
+		{}
 
 		Pair(const Pair<T1, T2> &c) : first(c.first), second(c.second)
-		{
-		}
+		{}
 
 		template <typename U1, typename U2>
 		Pair<T1, T2> &operator=(const Pair<U1, U2> &c)
@@ -97,7 +92,7 @@ namespace ft
 	struct node
 	{
 		typedef Compare    key_compare;
-		Pair<T1, T2> content;
+		Pair<T1, T2> *content;
 		T1 &key;
 		unsigned char height;
 		node* parent;
@@ -108,8 +103,8 @@ namespace ft
 		//      - operator>(lhs, rhs)  <==>  comp(rhs, lhs)
 		//      - operator<=(lhs, rhs)  <==>  !comp(rhs, lhs)
 		//      - operator>=(lhs, rhs)  <==>  !comp(lhs, rhs)
-		node(const T1 &key, const T2 &value, key_compare comp = key_compare()) :
-		content(key, value),
+		node(Pair<T1, T2> content, key_compare comp) :
+		content(content),
 		key(content.first),
 		parent(nullptr),
 		comp(comp)
@@ -182,14 +177,14 @@ namespace ft
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* insert(node<T1, T2, Compare>* p, T1 k, T1 v, node<T1, T2, Compare>* up) // вставка ключа k в дерево с корнем p
+	node<T1, T2, Compare>* insert(node<T1, T2, Compare>* p, Pair<T1, T2> *content, node<T1, T2, Compare>* up) // вставка ключа k в дерево с корнем p
 	{
 		if (!p)
-			return new node<T1, T2, Compare>(k, v, up);
-		if (k < p->key)
-			p->left = insert(p->left, k, v, p);
+			return new node<T1, T2, Compare>(content, up);
+		if (p->comp(content->first, p->key))
+			p->left = insert(p->left, content, p);
 		else
-			p->right = insert(p->right, k, v, p);
+			p->right = insert(p->right, content, p);
 		return balance(p);
 	}
 
@@ -231,9 +226,9 @@ namespace ft
 	{
 		if (!p)
 			return 0;
-		if (k < p->key)
+		if (p->comp(k, p->key))
 			p->left = remove(p->left, k);
-		else if (k > p->key)
+		else if (p->comp(p->key, k))
 			p->right = remove(p->right, k);
 		else //  k == p->key
 		{

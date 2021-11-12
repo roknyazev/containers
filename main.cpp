@@ -4,8 +4,9 @@
 #include <ctime>
 #include "AVL.hpp"
 #include <map>
-//#include "MapIterator.hpp"
+#include "MapIterator.hpp"
 #include <vector>
+#include "Map.hpp"
 
 int main()
 {
@@ -13,5 +14,6 @@ int main()
 	std::map<int, int>::iterator it = test.begin();
 
 
-	return 0;
+
+	return &(*test.begin()) == &(*test.end());
 }

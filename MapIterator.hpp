@@ -14,7 +14,6 @@ namespace ft
 	{
 	public:
 		typedef Key                                             key_type;
-		typedef Compare                                         key_compare;
 		typedef T                                               mapped_type;
 
 		typedef size_t                                          size_type;
@@ -25,26 +24,23 @@ namespace ft
 		typedef value_type&                                     reference;
 		typedef value_type*                                     pointer;
 	private:
-		typedef node<Key, T>* node_pointer;
-		pointer value;
+		typedef node<Key, T, Compare>* node_pointer;
 		node_pointer node;
-		key_compare comp;
 	public:
-		MapIterator(pointer value = nullptr, node_pointer node = nullptr, key_compare comp = key_compare()) :
-		value(value),
-		node(node),
-		comp(comp){}
+		explicit MapIterator(node_pointer node = nullptr) :
+		node(node)
+		{}
 		MapIterator(const MapIterator &other) :
-		value(other.value),
-		node(other.node),
-		comp(other.comp){}
-		~MapIterator() {}
+		node(other.node)
+		{}
+		~MapIterator()
+		{}
 
 		MapIterator &operator=(const MapIterator &other)
 		{
-			value = other.value;
+			if (this == &other)
+				return *this;
 			node = other.value;
-			comp = other.value;
 			return *this;
 		}
 
@@ -71,12 +67,12 @@ namespace ft
 
 		reference operator*() const
 		{
-			return node->content;
+			return *(node->content);
 		}
 
 		pointer operator->() const
 		{
-			return &(node->content);
+			return node->content;
 		}
 
 		// prefix decrement
@@ -100,21 +96,21 @@ namespace ft
 			return ite;
 		}
 
-		template <typename Tf>
-		friend bool operator==(const MapIterator<Tf> &lhs, const MapIterator<Tf> &rhs);
+		template <class KeyF, class TF, class CompareF>
+		friend bool operator==(const MapIterator<KeyF, TF, CompareF> &lhs, const MapIterator<KeyF, TF, CompareF> &rhs);
 
 		template <typename Tf, class Alloc>
 		friend class Map;
 	};
 
-	template <typename T>
-	bool operator==(const MapIterator<T> &lhs, const MapIterator<T> &rhs)
+	template <class Key, class T, class Compare>
+	bool operator==(const MapIterator<Key, T, Compare> &lhs, const MapIterator<Key, T, Compare> &rhs)
 	{
 		return lhs.node == rhs.node;
 	}
 
-	template <typename T>
-	bool operator!=(const MapIterator<T> &lhs, const MapIterator<T> &rhs)
+	template <class Key, class T, class Compare>
+	bool operator!=(const MapIterator<Key, T, Compare> &lhs, const MapIterator<Key, T, Compare> &rhs)
 	{
 		return !(lhs == rhs);
 	}
