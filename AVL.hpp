@@ -92,8 +92,8 @@ namespace ft
 	struct node
 	{
 		typedef Compare    key_compare;
-		Pair<T1, T2> *content;
-		T1 &key;
+		Pair<const T1, T2> *content;
+		const T1 &key;
 		unsigned char height;
 		node* parent;
 		node* left;
@@ -103,9 +103,9 @@ namespace ft
 		//      - operator>(lhs, rhs)  <==>  comp(rhs, lhs)
 		//      - operator<=(lhs, rhs)  <==>  !comp(rhs, lhs)
 		//      - operator>=(lhs, rhs)  <==>  !comp(lhs, rhs)
-		node(Pair<T1, T2> content, key_compare comp) :
+		node(Pair<const T1, T2> *content, key_compare comp) :
 		content(content),
-		key(content.first),
+		key(content->first),
 		parent(nullptr),
 		comp(comp)
 		{
@@ -177,14 +177,20 @@ namespace ft
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* insert(node<T1, T2, Compare>* p, Pair<T1, T2> *content, node<T1, T2, Compare>* up) // вставка ключа k в дерево с корнем p
+	node<T1, T2, Compare>* insert(node<T1, T2, Compare>* p,
+                                  Pair<T1, T2> *content,
+                                  node<T1, T2, Compare>* up,
+                                  node<T1, T2, Compare>** result) // вставка ключа k в дерево с корнем p
 	{
 		if (!p)
-			return new node<T1, T2, Compare>(content, up);
+        {
+            *result = new node<T1, T2, Compare>(content, up);
+            return *result;
+        }
 		if (p->comp(content->first, p->key))
-			p->left = insert(p->left, content, p);
+			p->left = insert(p->left, content, p, result);
 		else
-			p->right = insert(p->right, content, p);
+			p->right = insert(p->right, content, p, result);
 		return balance(p);
 	}
 

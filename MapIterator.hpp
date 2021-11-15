@@ -99,7 +99,7 @@ namespace ft
 		template <class KeyF, class TF, class CompareF>
 		friend bool operator==(const MapIterator<KeyF, TF, CompareF> &lhs, const MapIterator<KeyF, TF, CompareF> &rhs);
 
-		template <typename Tf, class Alloc>
+		template <class KeyF, class TF, class CompareF, class Alloc>
 		friend class Map;
 	};
 

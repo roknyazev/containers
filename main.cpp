@@ -10,12 +10,13 @@
 
 int main()
 {
-	std::map<int, int> test;
-	std::map<int, int>::iterator it = test.begin();
-    std::map<int, int>::iterator ite = test.end();
+	ft::Map<int, int> test;
+	ft::Map<int, int>::iterator it = test.begin();
+    ft::Map<int, int>::iterator ite = test.end();
 
 
     std::cout << it->first << std::endl;
-
-	return 0;//&(*test.begin()) == &(*test.end());
+    test[5] = 5;
+    std::cout << it->first << std::endl;
+	return 0;
 }

@@ -28,6 +28,27 @@ namespace ft
 		typedef MapIterator<Key const, T const, Compare> const_iterator;
 		typedef ReverseIterator<iterator> reverse_iterator;
 		typedef ReverseIterator<const_iterator> const_reverse_iterator;
+        class value_compare
+        {
+            friend class map;
+
+        protected:
+
+            key_compare comp;
+
+            value_compare(Compare c) : comp(c) {}  // constructed with map's comparison object
+
+        public:
+
+            typedef bool        result_type;
+            typedef value_type  first_argument_type;
+            typedef value_type  second_argument_type;
+
+            bool operator()(const value_type& x, const value_type& y) const
+            {
+                return comp(x.first, y.first);
+            }
+        };
 	private:
 		typedef node<Key, T, Compare> node_obj;
 		typedef node<Key, T, Compare> * node_ptr;
@@ -41,12 +62,43 @@ namespace ft
 		node_ptr first;
 		node_ptr last;
 
+        size_type map_size;
+
+        void detach_first_last()
+        {
+            min_node->left = nullptr;
+            max_node->right = nullptr;
+        }
+
+        void attach_first_last()
+        {
+            min_node->left = first;
+            first->parent = min_node;
+
+            max_node->right = last;
+            last->parent = max_node;
+        }
+
+        node_ptr find_key(node_ptr p, key_type key)
+        {
+            if (!p)
+                return 0;
+            if (p->comp(key, p->key))
+                p->left = remove(p->left, key);
+            else if (p->comp(p->key, key))
+                p->right = remove(p->right, key);
+            else
+                return p;
+        }
 	public:
+
+
 		explicit Map(const allocator_type& alloc = allocator_type(), const Compare &cmp = Compare()):
 		allocator(alloc),
 		comp(cmp)
 		{
             root = nullptr;
+            map_size = 0;
             first = new node_obj(allocator.allocate(1), comp);
             last = new node_obj(allocator.allocate(1), comp);
             min_node = last;
@@ -63,6 +115,7 @@ namespace ft
 		{
 
             root = nullptr;
+            map_size = 0;
             first = new node_obj(allocator.allocate(1), comp);
             last = new node_obj(allocator.allocate(1), comp);
             min_node = last;
@@ -77,6 +130,7 @@ namespace ft
             comp(other.comp)
         {
             root = nullptr;
+            map_size = 0;
             first = new node_obj(allocator.allocate(1), comp);
             last = new node_obj(allocator.allocate(1), comp);
             min_node = last;
@@ -89,8 +143,9 @@ namespace ft
 
         ~Map()
         {
-            //clear(); FIXME
-            //deallocateNode(_lastElem);
+            clear();
+            delete first;
+            delete last;
         }
 
         Map& operator=(const Map& x)
@@ -107,46 +162,225 @@ namespace ft
 
         iterator begin()
         {
-            return iterator(_lastElem->right, _lastElem, _comp);
+            return iterator(min_node);
         }
 
         const_iterator begin() const
         {
-            return const_iterator(_lastElem->right, _lastElem, _comp);
+            return const_iterator(min_node);
         }
 
         iterator end()
         {
-            return iterator(_lastElem, _lastElem, _comp);
+            return iterator(last);
         }
 
         const_iterator end() const
         {
-            return const_iterator(_lastElem, _lastElem, _comp);
+            return const_iterator(last);
         }
 
         reverse_iterator rbegin()
         {
-            return reverse_iterator(_lastElem->left, _lastElem, _comp);
+            return reverse_iterator(max_node);
         }
 
 
         const_reverse_iterator rbegin() const
         {
-            return const_reverse_iterator(_lastElem->left, _lastElem, _comp);
+            return const_reverse_iterator(max_node);
         }
 
 
         reverse_iterator rend()
         {
-            return reverse_iterator(_lastElem, _lastElem, _comp);
+            return reverse_iterator(first);
         }
 
         const_reverse_iterator rend() const
         {
-            return const_reverse_iterator(_lastElem, _lastElem, _comp);
+            return const_reverse_iterator(first);
         }
 
+        bool empty() const
+        {
+            return map_size == 0;
+        }
+
+        size_type size() const
+        {
+            return map_size;
+        }
+
+        size_type       max_size() const
+        {
+            return (std::numeric_limits<size_type>::max() / sizeof(value_type));
+        }
+
+        mapped_type& operator[](const key_type& k)
+        {
+            node_ptr tmp = find_key(root, k);
+
+            if (tmp)
+                return tmp->content->second;
+
+            pointer val = allocator.allocate(1);
+            val->first = k;
+            insert(*val);
+            return val->second;
+        }
+
+        ft::Pair<iterator, bool> insert (const value_type& val)
+        {
+            node_ptr elemIsPresent = find_key(root, val.first);
+            if (elemIsPresent)
+                return ft::Pair<iterator, bool>(iterator(elemIsPresent), false);
+
+            ++map_size;
+            detach_first_last();
+            node_ptr *res;
+            root = ft::insert(root, &val, nullptr, res);
+            if (comp(val->first, min_node->key))
+                min_node = *res;
+            if (comp(max_node->key, val->first))
+                max_node = *res;
+            attach_first_last();
+            return ft::Pair<iterator, bool>(iterator(*res), true);
+        }
+
+        template <class InputIterator>
+        void insert (InputIterator first_it, InputIterator last_it)
+        {
+            while (first_it != last_it)
+                insert(*first_it++);
+        }
+
+        void erase (iterator position)
+        {
+            ft::remove(root, position->first);
+            --map_size;
+        }
+
+        size_type erase (const key_type& k)
+        {
+            size_type ret;
+            node_ptr tmp = ft::remove(root, k);
+            if (tmp == 0)
+                ret = 0;
+            else
+                ret = 1;
+            map_size -= ret;
+            return ret;
+        }
+
+        void erase (iterator first_it, iterator last_it)
+        {
+            while (first_it != last_it)
+            {
+                iterator tmp(first_it);
+                ++first_it;
+                erase(tmp);
+            }
+        }
+
+        void swap (Map& x)
+        {
+            ft::swap(allocator);
+            ft::swap(comp);
+            ft::swap(root);
+            ft::swap(min_node);
+            ft::swap(max_node);
+            ft::swap(first);
+            ft::swap(last);
+            ft::swap(map_size);
+        }
+
+        void clear()
+        {
+            erase(begin(), end());
+        }
+
+
+        key_compare key_comp() const
+        {
+            return comp;
+        }
+
+        value_compare value_comp() const
+        {
+            return value_compare(comp);
+        }
+
+        iterator find(const key_type& k)
+        {
+            node_ptr tmp = find_key(root, k);
+
+            if (tmp)
+                return iterator(tmp);
+
+            return end();
+        }
+
+        const_iterator find(const key_type& k) const
+        {
+            node_ptr tmp = searchNode(root, k);
+
+            if (tmp)
+                return const_iterator(tmp);
+
+            return end();
+        }
+
+        size_type count (const key_type& k) const
+        {
+            node_ptr tmp = searchNode(root, k);
+
+            return tmp;
+        }
+
+        iterator lower_bound(const key_type& k)
+        {
+            iterator it = begin();
+
+            for (; it != end(); ++it)
+                if (!_comp(it->first, k))
+                    break;
+
+            return it;
+        }
+
+        const_iterator lower_bound(const key_type& k) const
+        {
+            const_iterator it = begin();
+
+            for (; it != end(); ++it)
+                if (!_comp(it->first, k))
+                    break;
+
+            return it;
+        }
+
+        iterator upper_bound(const key_type& k)
+        {
+            iterator it = begin();
+
+            for (; it != end(); ++it)
+                if (_comp(k, it->first))
+                    break;
+
+            return it;
+        }
+
+        const_iterator upper_bound(const key_type& k) const
+        {
+            const_iterator it = begin();
+
+            for (; it != end(); ++it)
+                if (_comp(k, it->first))
+                    break;
+
+            return it;
+        }
     };
 
 }
