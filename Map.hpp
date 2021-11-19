@@ -84,9 +84,9 @@ namespace ft
             if (!p)
                 return 0;
             if (p->comp(key, p->key))
-                p->left = remove(p->left, key);
+                p->left = find_key(p->left, key);
             else if (p->comp(p->key, key))
-                p->right = remove(p->right, key);
+                p->right = find_key(p->right, key);
             else
                 return p;
         }
@@ -225,7 +225,7 @@ namespace ft
                 return tmp->content->second;
 
             pointer val = allocator.allocate(1);
-            val->first = k;
+            allocator.construct(val, make_pair<key_type, mapped_type>(k, mapped_type()));
             insert(*val);
             return val->second;
         }
@@ -240,9 +240,9 @@ namespace ft
             detach_first_last();
             node_ptr *res;
             root = ft::insert(root, &val, nullptr, res);
-            if (comp(val->first, min_node->key))
+            if (comp(val.first, min_node->key))
                 min_node = *res;
-            if (comp(max_node->key, val->first))
+            if (comp(max_node->key, val.first))
                 max_node = *res;
             attach_first_last();
             return ft::Pair<iterator, bool>(iterator(*res), true);
