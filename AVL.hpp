@@ -140,7 +140,7 @@ namespace ft
 	{
 		node<T1, T2, Compare>* q = p->left;
         node<T1, T2, Compare>* r = q->right;
-        //node<T1, T2, Compare>* parent = p->parent;
+        node<T1, T2, Compare>* parent = p->parent;
 		p->left = r;
 
         /////////
@@ -160,6 +160,8 @@ namespace ft
             r->parent = p;
         if (p)
             p->parent = q;
+        if (q)
+            q->parent = parent;
 
 		fixheight(p);
 		fixheight(q);
@@ -171,8 +173,7 @@ namespace ft
 	{
 		node<T1, T2, Compare>* p = q->right;
         node<T1, T2, Compare>* r = p->left;
-
-        //node<T1, T2, Compare>* parent = q->parent;
+        node<T1, T2, Compare>* parent = q->parent;
 
 		q->right = r;
 
@@ -193,6 +194,8 @@ namespace ft
             r->parent = q;
         if (q)
             q->parent = p;
+        if (p)
+            p->parent = parent;
 
 		fixheight(q);
 		fixheight(p);
