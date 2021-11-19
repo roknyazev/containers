@@ -40,7 +40,7 @@ namespace ft
 		{
 			if (this == &other)
 				return *this;
-			node = other.value;
+			node = other.node;
 			return *this;
 		}
 

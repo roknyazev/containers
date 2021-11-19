@@ -113,17 +113,6 @@ namespace ft
 			right = 0;
 			height = 1;
 		}
-
-        node() :
-        content(nullptr),
-        key(nullptr),
-        parent(nullptr),
-        comp(nullptr)
-        {
-            left = 0;
-            right = 0;
-            height = 0;
-        }
 	};
 
 	template <typename T1, typename T2, class Compare>
@@ -193,9 +182,12 @@ namespace ft
                                   node<T1, T2, Compare>* up,
                                   node<T1, T2, Compare>** result) // вставка ключа k в дерево с корнем p
 	{
+        node<T1, T2, Compare> *res;
 		if (!p)
         {
-            *result = new node<T1, T2, Compare>(content, up);
+            res = new node<T1, T2, Compare>(content, Compare());
+            *result = res;
+            (*result)->parent = up;
             return *result;
         }
 		if (p->comp(content->first, p->key))

@@ -50,8 +50,8 @@ namespace ft
             }
         };
 	private:
-		typedef node<Key, T, Compare> node_obj;
-		typedef node<Key, T, Compare> * node_ptr;
+		typedef node<key_type , mapped_type, Compare> node_obj;
+		typedef node<key_type , mapped_type, Compare> * node_ptr;
 
 		allocator_type allocator;
 		key_compare comp;
@@ -84,9 +84,9 @@ namespace ft
             if (!p)
                 return 0;
             if (p->comp(key, p->key))
-                p->left = find_key(p->left, key);
+                return find_key(p->left, key);
             else if (p->comp(p->key, key))
-                p->right = find_key(p->right, key);
+                return find_key(p->right, key);
             else
                 return p;
         }
@@ -219,7 +219,9 @@ namespace ft
 
         mapped_type& operator[](const key_type& k)
         {
+            detach_first_last();
             node_ptr tmp = find_key(root, k);
+            attach_first_last();
 
             if (tmp)
                 return tmp->content->second;
@@ -230,22 +232,25 @@ namespace ft
             return val->second;
         }
 
-        ft::Pair<iterator, bool> insert (const value_type& val)
+        ft::Pair<iterator, bool> insert (value_type& val)
         {
+            detach_first_last();
             node_ptr elemIsPresent = find_key(root, val.first);
+            attach_first_last();
             if (elemIsPresent)
                 return ft::Pair<iterator, bool>(iterator(elemIsPresent), false);
 
             ++map_size;
             detach_first_last();
-            node_ptr *res;
-            root = ft::insert(root, &val, nullptr, res);
-            if (comp(val.first, min_node->key))
-                min_node = *res;
-            if (comp(max_node->key, val.first))
-                max_node = *res;
+            node_ptr res = nullptr;
+            root = ft::insert<key_type, mapped_type, key_compare>(root, &val, nullptr, &res);
+            //root = ft::insert<key_type, mapped_type, key_compare>(root, &val, nullptr, res);
+            if (comp(val.first, min_node->key) || min_node == last)
+                min_node = res;
+            if (comp(max_node->key, val.first) || max_node == first)
+                max_node = res;
             attach_first_last();
-            return ft::Pair<iterator, bool>(iterator(*res), true);
+            return ft::Pair<iterator, bool>(iterator(res), true);
         }
 
         template <class InputIterator>
