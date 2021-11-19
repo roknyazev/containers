@@ -139,8 +139,28 @@ namespace ft
 	node<T1, T2, Compare>* rotateright(node<T1, T2, Compare>* p) // правый поворот вокруг p
 	{
 		node<T1, T2, Compare>* q = p->left;
-		p->left = q->right;
+        node<T1, T2, Compare>* r = q->right;
+        //node<T1, T2, Compare>* parent = p->parent;
+		p->left = r;
+
+        /////////
+        //q->right->parent = p;
+        /////////
+
 		q->right = p;
+
+        /////////
+        //p->parent = q;
+        /////////
+
+        /////////
+        //q->parent = parent;
+        /////////
+        if (r)
+            r->parent = p;
+        if (p)
+            p->parent = q;
+
 		fixheight(p);
 		fixheight(q);
 		return q;
@@ -150,8 +170,30 @@ namespace ft
 	node<T1, T2, Compare>* rotateleft(node<T1, T2, Compare>* q) // левый поворот вокруг q
 	{
 		node<T1, T2, Compare>* p = q->right;
-		q->right = p->left;
+        node<T1, T2, Compare>* r = p->left;
+
+        //node<T1, T2, Compare>* parent = q->parent;
+
+		q->right = r;
+
+        /////////
+        //p->left->parent = q;
+        /////////
+
 		p->left = q;
+
+        /////////
+        //q->parent = p;
+        /////////
+
+        /////////
+        //p->parent = parent;
+        /////////
+        if (r)
+            r->parent = q;
+        if (q)
+            q->parent = p;
+
 		fixheight(q);
 		fixheight(p);
 		return p;
