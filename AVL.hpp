@@ -212,12 +212,16 @@ namespace ft
 	template <typename T1, typename T2, class Compare>
 	node<T1, T2, Compare>* findmaxparent(node<T1, T2, Compare>* p)
 	{
+        if (p->parent == nullptr)
+            return p;
 		return (p != p->parent->left) ? findmaxparent(p->parent) : p->parent;
 	}
 
 	template <typename T1, typename T2, class Compare>
 	node<T1, T2, Compare>* findminparent(node<T1, T2, Compare>* p)
 	{
+        if (p->parent == nullptr)
+            return p;
 		return (p != p->parent->right) ? findmaxparent(p->parent) : p->parent;
 	}
 

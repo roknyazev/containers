@@ -245,6 +245,7 @@ namespace ft
             node_ptr res = nullptr;
             root = ft::insert<key_type, mapped_type, key_compare>(root, &val, nullptr, &res);
             //root = ft::insert<key_type, mapped_type, key_compare>(root, &val, nullptr, res);
+            root->parent = nullptr;
             if (comp(val.first, min_node->key) || min_node == last)
                 min_node = res;
             if (comp(max_node->key, val.first) || max_node == first)
