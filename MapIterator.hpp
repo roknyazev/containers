@@ -47,10 +47,11 @@ namespace ft
 		// prefix increment
 		MapIterator &operator++()
 		{
-
-			if (node->right != nullptr)
-				node = findmin(node->right);
-			else
+            if (node->right != nullptr)
+                node = findmin(node->right);
+            else if (node->parent != nullptr && node->parent->left == node)
+                node = node->parent;
+            else
 				node = findmaxparent(node->parent);
 			return *this;
 		}
@@ -58,10 +59,12 @@ namespace ft
 		// postfix increment
 		MapIterator operator++(int)
 		{
-			MapIterator ite = *this;
-			if (node->right != nullptr)
+            MapIterator ite = *this;
+            if (node->right != nullptr)
 				node = findmin(node->right);
-			else
+            else if (node->parent != nullptr && node->parent->left == node)
+                node = node->parent;
+            else
 				node = findmaxparent(node->parent);
 			return ite;
 		}
@@ -79,9 +82,11 @@ namespace ft
 		// prefix decrement
 		MapIterator &operator--()
 		{
-			if (node->left != nullptr)
-				node = findmax(node->right);
-			else
+            if (node->left != nullptr)
+                node = findmax(node->right);
+            else if (node->parent != nullptr && node->parent->right == node)
+                node = node->parent;
+            else
 				node = findminparent(node->parent);
 			return *this;
 		}
@@ -90,9 +95,11 @@ namespace ft
 		MapIterator operator--(int)
 		{
 			MapIterator ite = *this;
-			if (node->left != nullptr)
-				node = findmax(node->right);
-			else
+            if (node->left != nullptr)
+                node = findmax(node->right);
+            else if (node->parent != nullptr && node->parent->right == node)
+                node = node->parent;
+            else
 				node = findminparent(node->parent);
 			return ite;
 		}

@@ -13,7 +13,7 @@ int main()
 	ft::Map<int, int> test;
 
 
-    for (int i = 6; i >= 1; i--)
+    for (int i = 100; i >= -100; i--)
         test[i] = 0;
 
     ft::Map<int, int>::iterator it = test.begin();
@@ -28,7 +28,7 @@ int main()
 
     std::map<int, int> test_cmp;
 
-    for (int i = 10; i >= -10; i--)
+    for (int i = 100; i >= -100; i--)
         test_cmp[i] = 0;
 
     std::map<int, int>::iterator it_cmp = test_cmp.begin();
