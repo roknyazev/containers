@@ -22,7 +22,7 @@ int main()
     for (; it != ite; ++it)
         std::cout << it->first << " ";
     std::cout << std::endl;
-
+    std::cout << test.upper_bound(100) << std::endl;
 
     std::cout << std::endl;
 

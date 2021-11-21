@@ -263,7 +263,8 @@ namespace ft
 
         void erase (iterator position)
         {
-            ft::remove(root, position->first);
+            allocator.deallocate(&(*(position)), sizeof(position->second));
+            root = ft::remove(root, position->first);
             --map_size;
         }
 
@@ -283,9 +284,9 @@ namespace ft
         {
             while (first_it != last_it)
             {
-                iterator tmp(first_it);
-                ++first_it;
+                iterator tmp(root);
                 erase(tmp);
+                ++first_it;
             }
         }
 
@@ -329,7 +330,7 @@ namespace ft
 
         const_iterator find(const key_type& k) const
         {
-            node_ptr tmp = searchNode(root, k);
+            node_ptr tmp = find_key(root, k);
 
             if (tmp)
                 return const_iterator(tmp);
@@ -339,7 +340,7 @@ namespace ft
 
         size_type count (const key_type& k) const
         {
-            node_ptr tmp = searchNode(root, k);
+            node_ptr tmp = find_key(root, k);
 
             return tmp;
         }
@@ -349,7 +350,7 @@ namespace ft
             iterator it = begin();
 
             for (; it != end(); ++it)
-                if (!_comp(it->first, k))
+                if (!comp(it->first, k))
                     break;
 
             return it;
@@ -360,7 +361,7 @@ namespace ft
             const_iterator it = begin();
 
             for (; it != end(); ++it)
-                if (!_comp(it->first, k))
+                if (!comp(it->first, k))
                     break;
 
             return it;
@@ -371,7 +372,7 @@ namespace ft
             iterator it = begin();
 
             for (; it != end(); ++it)
-                if (_comp(k, it->first))
+                if (comp(k, it->first))
                     break;
 
             return it;
@@ -382,7 +383,7 @@ namespace ft
             const_iterator it = begin();
 
             for (; it != end(); ++it)
-                if (_comp(k, it->first))
+                if (comp(k, it->first))
                     break;
 
             return it;
