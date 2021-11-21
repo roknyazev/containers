@@ -3,4 +3,8 @@ project(containers)
 
 set(CMAKE_CXX_STANDARD 98)
 
-add_executable(containers main.cpp Vector.hpp Utils.hpp VectorIterator.hpp TypeTraits.hpp Vector.ipp Stack.hpp AVL.hpp MapIterator.hpp Map.hpp)
+add_executable(containers_map map_test.cpp vector.hpp Utils.hpp VectorIterator.hpp TypeTraits.hpp Vector.ipp stack.hpp AVL.hpp MapIterator.hpp map.hpp )
+
+add_executable(containers_vector vector.hpp Utils.hpp VectorIterator.hpp TypeTraits.hpp Vector.ipp stack.hpp AVL.hpp MapIterator.hpp map.hpp vector_test.cpp )
+
+add_executable(containers_stack vector.hpp Utils.hpp VectorIterator.hpp TypeTraits.hpp Vector.ipp stack.hpp AVL.hpp MapIterator.hpp map.hpp stack_test.cpp)

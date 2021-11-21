@@ -99,10 +99,6 @@ namespace ft
 		node* left;
 		node* right;
 		key_compare comp;
-		// comp is equivalent to operator <. So:
-		//      - operator>(lhs, rhs)  <==>  comp(rhs, lhs)
-		//      - operator<=(lhs, rhs)  <==>  !comp(rhs, lhs)
-		//      - operator>=(lhs, rhs)  <==>  !comp(lhs, rhs)
 		node(Pair<const T1, T2> *content, key_compare comp) :
 		content(content),
 		key(content->first),
@@ -136,26 +132,15 @@ namespace ft
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* rotateright(node<T1, T2, Compare>* p) // правый поворот вокруг p
+	node<T1, T2, Compare>* rotateright(node<T1, T2, Compare>* p)
 	{
 		node<T1, T2, Compare>* q = p->left;
         node<T1, T2, Compare>* r = q->right;
         node<T1, T2, Compare>* parent = p->parent;
+
 		p->left = r;
-
-        /////////
-        //q->right->parent = p;
-        /////////
-
 		q->right = p;
 
-        /////////
-        //p->parent = q;
-        /////////
-
-        /////////
-        //q->parent = parent;
-        /////////
         if (r)
             r->parent = p;
         if (p)
@@ -169,27 +154,15 @@ namespace ft
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* rotateleft(node<T1, T2, Compare>* q) // левый поворот вокруг q
+	node<T1, T2, Compare>* rotateleft(node<T1, T2, Compare>* q)
 	{
 		node<T1, T2, Compare>* p = q->right;
         node<T1, T2, Compare>* r = p->left;
         node<T1, T2, Compare>* parent = q->parent;
 
 		q->right = r;
-
-        /////////
-        //p->left->parent = q;
-        /////////
-
 		p->left = q;
 
-        /////////
-        //q->parent = p;
-        /////////
-
-        /////////
-        //p->parent = parent;
-        /////////
         if (r)
             r->parent = q;
         if (q)
@@ -203,7 +176,7 @@ namespace ft
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* balance(node<T1, T2, Compare>* p) // балансировка узла p
+	node<T1, T2, Compare>* balance(node<T1, T2, Compare>* p)
 	{
 		fixheight(p);
 		if (bfactor(p) == 2)
@@ -218,14 +191,14 @@ namespace ft
 				p->left = rotateleft(p->left);
 			return rotateright(p);
 		}
-		return p; // балансировка не нужна
+		return p;
 	}
 
 	template <typename T1, typename T2, class Compare>
 	node<T1, T2, Compare>* insert(node<T1, T2, Compare>* p,
                                   Pair<const T1, T2> *content,
                                   node<T1, T2, Compare>* up,
-                                  node<T1, T2, Compare>** result) // вставка ключа k в дерево с корнем p
+                                  node<T1, T2, Compare>** result)
 	{
         node<T1, T2, Compare> *res;
 		if (!p)
@@ -243,13 +216,13 @@ namespace ft
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* findmin(node<T1, T2, Compare>* p) // поиск узла с минимальным ключом в дереве p
+	node<T1, T2, Compare>* findmin(node<T1, T2, Compare>* p)
 	{
 		return p->left ? findmin(p->left) : p;
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* findmax(node<T1, T2, Compare>* p) // поиск узла с минимальным ключом в дереве p
+	node<T1, T2, Compare>* findmax(node<T1, T2, Compare>* p)
 	{
 		return p->right ? findmin(p->right) : p;
 	}
@@ -271,7 +244,7 @@ namespace ft
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* removemin(node<T1, T2, Compare>* p) // удаление узла с минимальным ключом из дерева p
+	node<T1, T2, Compare>* removemin(node<T1, T2, Compare>* p)
 	{
 		if (p->left == 0)
 			return p->right;
@@ -280,7 +253,7 @@ namespace ft
 	}
 
 	template <typename T1, typename T2, class Compare>
-	node<T1, T2, Compare>* remove(node<T1, T2, Compare>* p, T1 k) // удаление ключа k из дерева p
+	node<T1, T2, Compare>* remove(node<T1, T2, Compare>* p, T1 k)
 	{
 		if (!p)
 			return 0;
@@ -288,7 +261,7 @@ namespace ft
 			p->left = remove(p->left, k);
 		else if (p->comp(p->key, k))
 			p->right = remove(p->right, k);
-		else //  k == p->key
+		else
 		{
 			node<T1, T2, Compare>* q = p->left;
 			node<T1, T2, Compare>* r = p->right;

@@ -99,7 +99,7 @@ namespace ft
 		friend ptrdiff_t operator-(const VectorIterator<Tf> &lhs, const VectorIterator<Tf> &rhs);
 
 		template <typename Tf, class Alloc>
-		friend class Vector;
+		friend class vector;
 	};
 
 	template <typename T>

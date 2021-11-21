@@ -12,7 +12,7 @@
 namespace ft
 {
 	template <typename T, class A = std::allocator<T> >
-	class Vector
+	class vector
 	{
 	public:
 		typedef A allocator_type;
@@ -134,15 +134,15 @@ namespace ft
 		}
 
 	public:
-		explicit Vector (const allocator_type& alloc = allocator_type());
-		explicit Vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());
+		explicit vector (const allocator_type& alloc = allocator_type());
+		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());
 		template <class InputIterator>
-		Vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
-		Vector (const Vector& x);
+		vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
+		vector (const vector& x);
 
-		~Vector();
+		~vector();
 
-		Vector& operator=(const Vector &);
+		vector& operator=(const vector &);
 
 		/*
 		 * iterators
@@ -204,7 +204,7 @@ namespace ft
 		void pop_back();
 
 		void clear();
-		void swap (Vector& x);
+		void swap (vector& x);
 
 		/*
 		 * observers

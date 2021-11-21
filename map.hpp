@@ -12,7 +12,7 @@ namespace ft
 				class T,
 				class Compare = std::less<Key>,
 				class A = std::allocator<ft::Pair<const Key, T> >
-				> class Map
+				> class map
 	{
 	public:
 		typedef Key key_type;
@@ -95,7 +95,7 @@ namespace ft
 	public:
 
 
-		explicit Map(const allocator_type& alloc = allocator_type(), const Compare &cmp = Compare()):
+		explicit map(const allocator_type& alloc = allocator_type(), const Compare &cmp = Compare()):
 		allocator(alloc),
 		comp(cmp)
 		{
@@ -108,7 +108,7 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		Map(InputIterator first,
+		map(InputIterator first,
             InputIterator last,
             const key_compare& comp = key_compare(),
             const allocator_type& alloc = allocator_type()) :
@@ -127,7 +127,7 @@ namespace ft
 				insert(*first);
 		}
 
-        Map(const Map& other) :
+        map(const map& other) :
             allocator(other.allocator),
             comp(other.comp)
         {
@@ -143,24 +143,20 @@ namespace ft
                 insert(*it);
         }
 
-        ~Map()
+        ~map()
         {
             clear();
             delete first;
             delete last;
         }
 
-        Map& operator=(const Map& x)
+        map& operator=(const map& x)
         {
-            Map tmp(x);
+            map tmp(x);
             this->swap(tmp);
 
             return *this;
         }
-
-
-
-
 
         iterator begin()
         {
@@ -246,8 +242,6 @@ namespace ft
             detach_first_last();
             node_ptr res = nullptr;
             root = ft::insert<key_type, mapped_type, key_compare>(root, &val, nullptr, &res);
-            //root = ft::insert<key_type, mapped_type, key_compare>(root, &val, nullptr, res);
-            //root->parent = nullptr;
             if (comp(val.first, min_node->key) || min_node == last)
                 min_node = res;
             if (comp(max_node->key, val.first) || max_node == first)
@@ -292,7 +286,7 @@ namespace ft
             }
         }
 
-        void swap (Map& x)
+        void swap (map& x)
         {
             ft::swap(allocator);
             ft::swap(comp);
