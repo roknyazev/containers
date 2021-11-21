@@ -28,6 +28,7 @@ namespace ft
 		typedef MapIterator<Key const, T const, Compare> const_iterator;
 		typedef ReverseIterator<iterator> reverse_iterator;
 		typedef ReverseIterator<const_iterator> const_reverse_iterator;
+
         class value_compare
         {
             friend class map;
@@ -36,7 +37,7 @@ namespace ft
 
             key_compare comp;
 
-            value_compare(Compare c) : comp(c) {}  // constructed with map's comparison object
+            value_compare(Compare c) : comp(c) {}
 
         public:
 
@@ -49,9 +50,10 @@ namespace ft
                 return comp(x.first, y.first);
             }
         };
+
 	private:
 		typedef node<key_type , mapped_type, Compare> node_obj;
-		typedef node<key_type , mapped_type, Compare> * node_ptr;
+		typedef node<key_type , mapped_type, Compare> *node_ptr;
 
 		allocator_type allocator;
 		key_compare comp;

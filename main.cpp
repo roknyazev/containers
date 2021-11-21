@@ -22,7 +22,7 @@ int main()
     for (; it != ite; ++it)
         std::cout << it->first << " ";
     std::cout << std::endl;
-    std::cout << test.upper_bound(100) << std::endl;
+    std::cout << (test.lower_bound(95))->first << std::endl;
 
     std::cout << std::endl;
 
@@ -37,5 +37,6 @@ int main()
     for (; it_cmp != ite_cmp; ++it_cmp)
         std::cout << it_cmp->first << " ";
     std::cout << std::endl;
+    std::cout << (test_cmp.lower_bound(95))->first << std::endl;
 	return 0;
 }
